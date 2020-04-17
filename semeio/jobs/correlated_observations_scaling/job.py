@@ -11,9 +11,10 @@ from semeio.jobs.correlated_observations_scaling.validator import has_keys, is_s
 
 
 class ScalingJob(object):
-    def __init__(self, obs_keys, obs, obs_with_data, user_config_dict):
+    def __init__(self, obs_keys, obs, obs_with_data, user_config_dict, reporter):
         """Creates a ScalingJob instance with the given obs_keys, obs,
         obs_with_data and user_config_dict."""
+        self._reporter = reporter
         self._obs = obs
         self._obs_with_data = obs_with_data
         self._obs_keys = obs_keys
@@ -92,7 +93,7 @@ class ScalingJob(object):
                         obs_node.set_std_scaling(scale_factor)
                 elif obs_vector.getImplementationType().name != "SUMMARY_OBS":
                     obs_node.updateStdScaling(scale_factor, event.active_list)
-        print(
+        self._reporter.report(
             "Keys: {} scaled with scaling factor: {}".format(
                 [event.key for event in events], scale_factor
             )
